@@ -1,5 +1,5 @@
 <?php
 include "funciones.php";
 
-store();
+session_start();
 ?>

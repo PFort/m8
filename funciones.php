@@ -1,26 +1,42 @@
 <?php
-/**Funcio per conectar a la base de dades */
+/**
+ * Fitxer per guardar les funcions
+ */
+/**
+ * Funcio per conectar a la base de dades 
+ * @return torn
+*/
 function conectarBD() {
         $conexion = new mysqli("localhost", "root", "Password#9231", "futbolistas"); 
         return $conexion;
     }
 
+
+    /**
+     * Funcio per poder buscar dades
+     */
     function buscador($conexion, $pagina = 1, $por_pagina = 5, $busqueda = '') {
-        $por_pagina = 5; 
-        $pagina = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
-        $inicio = ($pagina - 1) * $por_pagina;
+    $por_pagina = 5; 
+    $pagina = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
+    $inicio = ($pagina - 1) * $por_pagina;
     
-        $query = "SELECT * FROM futbolistas";
-        if (isset($_GET['busqueda']) && !empty($_GET['busqueda'])) {
-            $busqueda = $_GET['busqueda'];
-            $query .= " WHERE nom LIKE '%$busqueda%' OR cognom LIKE '%$busqueda%' OR equip LIKE '%$busqueda%' OR nacionalitat LIKE '%$busqueda%'";
-        }
-        $query .= " LIMIT $inicio, $por_pagina";
+    $query = "SELECT * FROM futbolistas";
+    if (isset($_GET['busqueda']) && !empty($_GET['busqueda'])) {
+        $busqueda = $_GET['busqueda'];
+        $query .= " WHERE nom LIKE '%$busqueda%' OR cognom LIKE '%$busqueda%' OR equip LIKE '%$busqueda%' OR nacionalitat LIKE '%$busqueda%'";
+    }
+    $query .= " LIMIT $inicio, $por_pagina";
     
-        return $query;
-        
+    return $query;
+    
     }
 
+    /**
+     * funcio per mostrar taula 
+     * @param $conexion conecta a la base de dades
+     * @param $query consulta sql
+     * @author Pau
+     */
     function tabla($conexion, $query) {
         global $busqueda, $por_pagina; 
     
@@ -37,10 +53,11 @@ function conectarBD() {
             echo "<td><a href='update.php?id=".$fila['id']."' class='btn'>Editar</a> <td><a href='#' onclick='confirmarEliminacion(".$fila['id'].")' class='btn'>Eliminar</a></td>";
             echo "</tr>";
         }
-        /**Funcio per mostrar la taula */
     }
     
-
+/**
+ * Funcio per fer la paginacio 
+ */
 function paginacion() {
     global $busqueda, $por_pagina; 
 
@@ -66,10 +83,12 @@ function paginacion() {
     }
     echo "</div>";
     $conexion->close();
-
-    /**Funcio per fer la paginacio */
 }
 
+
+/**
+ * Funcio per borrar dades de la taula 
+ */
 function delete(){
     $id = $_GET['id'];
 
@@ -77,10 +96,12 @@ function delete(){
 
     $conexion->query("DELETE FROM futbolistas WHERE id = $id");
 
-    header("Location: index.php");
-
-    /**Funcio per borrar dades de la base de dades */
+    header("Location: indexfutbolistas.php");
 }
+
+/**
+ * Funcio per guardar les dades a la taula 
+ */
 
 function store(){
     $nom = $_POST['nom'];
@@ -93,11 +114,16 @@ function store(){
 
     $conexion->query("INSERT INTO futbolistas (nom, cognom, equip, nacionalitat, actiu) VALUES ('$nom', '$cognom', '$equip', '$nacionalitat', '$actiu')");
 
-    header("Location: index.php");
+    header("Location: indexfutbolistas.php");
 
-    /**Funcio per guardar les dades a la base de dades */
+    
 }
 
+
+
+/**
+ * Funcio per modificar les dades de la taula 
+ */
 function update(){
     $id = $_POST['id'];
     $nom = $_POST['nom'];
@@ -110,10 +136,14 @@ function update(){
 
     $conexion->query("UPDATE futbolistas SET nom = '$nom', cognom = '$cognom', equip = '$equip', nacionalitat = '$nacionalitat', actiu = '$actiu' WHERE id = $id");
 
-    header("Location: index.php");
-
-    /**Funcio per modificar les dades de la base de dades */
+    header("Location: ../indexfutbolistas.php");
 }
 
 
+
+
+
 ?>
+
+
+
